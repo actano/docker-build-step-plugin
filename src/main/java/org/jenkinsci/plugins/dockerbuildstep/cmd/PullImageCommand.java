@@ -17,6 +17,8 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.DockerException;
 import com.github.dockerjava.api.command.PullImageCmd;
 import com.github.dockerjava.api.model.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This command pulls Docker image from a repository.
@@ -27,6 +29,8 @@ import com.github.dockerjava.api.model.Image;
  * 
  */
 public class PullImageCommand extends DockerCommand {
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(PullImageCommand.class);
 
     private final String fromImage;
     private final String tag;
@@ -55,6 +59,8 @@ public class PullImageCommand extends DockerCommand {
     @Override
     public void execute(@SuppressWarnings("rawtypes") AbstractBuild build, ConsoleLogger console)
             throws DockerException, AbortException {
+        LOGGER.debug("Executing pull command");
+
         // TODO check it when submitting the form
         if (fromImage == null || fromImage.isEmpty()) {
             throw new IllegalArgumentException("At least one parameter is required");
@@ -107,6 +113,7 @@ public class PullImageCommand extends DockerCommand {
         String imageWithLatestTagIfNeeded = CommandUtils.addLatestTagIfNeeded(fromImageRes);
         for (Image img : images) {
             if (img.getRepoTags() == null) {
+                LOGGER.debug("RepoTag is null. Ignoring it.");
                 continue;
             }
 
