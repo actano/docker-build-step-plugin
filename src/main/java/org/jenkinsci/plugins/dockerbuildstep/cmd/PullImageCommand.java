@@ -106,6 +106,10 @@ public class PullImageCommand extends DockerCommand {
 
         String imageWithLatestTagIfNeeded = CommandUtils.addLatestTagIfNeeded(fromImageRes);
         for (Image img : images) {
+            if (img.getRepoTags() == null) {
+                continue;
+            }
+
             for (String repoTag : img.getRepoTags()) {
                 if (imageWithLatestTagIfNeeded.equals(repoTag)) {
                     return true;
